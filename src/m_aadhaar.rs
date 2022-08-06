@@ -9,14 +9,14 @@ pub struct M_Aadhaar {
 
 #[near_bindgen]
 impl Contract{
-    pub fn is_above_18(&self,id: Base58PublicKey) -> bool{
-        let m_aadhaar = self.m_aadhaar_by_id.get(&id.into()).unwrap_or_else(|| env::panic(b"No Corresponding Masked Records found"));
+    pub fn is_above_18(&self,id: AccountId) -> bool{
+        let m_aadhaar = self.m_aadhaar_by_id.get(&id).unwrap_or_else(|| env::panic(b"No Corresponding Masked Records found"));
 
         m_aadhaar.is_above_18
     }
 
-    pub fn is_senior_citizen(&self,id: Base58PublicKey) -> bool{
-        let m_aadhaar = self.m_aadhaar_by_id.get(&id.into()).unwrap_or_else(|| env::panic(b"No Corresponding Masked Records found"));
+    pub fn is_senior_citizen(&self,id: AccountId) -> bool{
+        let m_aadhaar = self.m_aadhaar_by_id.get(&id).unwrap_or_else(|| env::panic(b"No Corresponding Masked Records found"));
 
         m_aadhaar.is_senior_citizen
     }

@@ -29,10 +29,10 @@ pub struct Contract {
     pub owner_id: AccountId,
 
     //// LookUp for Aadhar Id
-    pub m_aadhaar_by_id: LookupMap<PublicKey,M_Aadhaar>,
+    pub m_aadhaar_by_id: LookupMap<AccountId,M_Aadhaar>,
 
     //// LookUp for Driving License
-    pub m_driving_license_by_id: LookupMap<PublicKey,M_DrivingLicense>,
+    pub m_driving_license_by_id: LookupMap<AccountId,M_DrivingLicense>,
 
     /// Metadata for the Fungible Token
     pub metadata: LazyOption<ContractMetadata>,
@@ -57,12 +57,12 @@ impl Contract {
     }
 
     #[payable]
-    pub fn add_m_aadhaar_record(&mut self,id: Base58PublicKey,m_aadhaar: M_Aadhaar){
+    pub fn add_m_aadhaar_record(&mut self,id: AccountId,m_aadhaar: M_Aadhaar){
         let initial_storage = env::storage_usage();
 
         assert_eq!(env::predecessor_account_id(),self.owner_id,"Only government can add aadhaar record");
 
-        if self.m_aadhaar_by_id.insert(&id.into(), &m_aadhaar).is_some(){
+        if self.m_aadhaar_by_id.insert(&id, &m_aadhaar).is_some(){
             env::panic(b"Invalid! Trying to upload a Duplicate Document");
         }
 
@@ -77,12 +77,12 @@ impl Contract {
     }
 
     #[payable]
-    pub fn add_m_driving_license_record(&mut self,id: Base58PublicKey,m_driving_license: M_DrivingLicense){
+    pub fn add_m_driving_license_record(&mut self,id: AccountId,m_driving_license: M_DrivingLicense){
         let initial_storage = env::storage_usage();
 
         assert_eq!(env::predecessor_account_id(),self.owner_id,"Only government can add driving license record");
 
-        if self.m_driving_license_by_id.insert(&id.into(), &m_driving_license).is_some(){
+        if self.m_driving_license_by_id.insert(&id, &m_driving_license).is_some(){
             env::panic(b"Invalid! Trying to upload a Duplicate Document");
         }
 
