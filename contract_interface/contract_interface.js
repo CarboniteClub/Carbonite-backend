@@ -61,7 +61,7 @@ const has_license = async (contract) => {
     
     const wallet = new WalletConnection(near);
 
-    const id = new keyStores.BrowserLocalStorageKeyStore.getKey("testnet",wallet.getAccountId());
+    const id = wallet.getAccountId();
 
     const response = await contract.has_license({id});
     return response;
@@ -82,7 +82,7 @@ const is_above_18 = async (contract) => {
     
     const wallet = new WalletConnection(near);
 
-    const id = new keyStores.BrowserLocalStorageKeyStore.getKey("testnet",wallet.getAccountId());
+    const id = wallet.getAccountId();
 
     const response = await contract.is_above_18({id});
     return response;
@@ -103,7 +103,7 @@ const is_senior_citizen = async (contract) => {
     
     const wallet = new WalletConnection(near);
 
-    const id = new keyStores.BrowserLocalStorageKeyStore.getKey("testnet",wallet.getAccountId());
+    const id = wallet.getAccountId();
 
     const response = await contract.has_license({id});
     return response;
@@ -168,17 +168,26 @@ const add_m_driving_license_record = async (contract, repo_url) => {
     return response;
 }
 
-// To get state of an account
+const login_handler = () => {
+    const networkConfig = {
+        networkId: "testnet",
+        keyStore: new keyStores.BrowserLocalStorageKeyStore,
+        nodeUrl: "https://rpc.testnet.near.org",
+        walletUrl: "https://wallet.testnet.near.org",
+        helperUrl: "https://helper.testnet.near.org",
+        explorerUrl: "https://explorer.testnet.near.org",
+        };
 
-// const new_account = await near.account(prefix + "." + contract_id);
-// const state = await new_account.state();
-
-const main = async() => {
-    const signer_account = "codefi1.testnet"
-    const contract_id = "codefi1.testnet"
+    const near = await connect(networkConfig);
     
-    const contract = setup_contract(signer_account,contract_id);
-    console.log(await init(signer_account,contract));
-}
+    const wallet = new WalletConnection(near);
 
-main();
+    if (!wallet.isSignedIn()) {
+        wallet.requestSignIn({
+            contract_id,
+            methodNames: ["new", "add_m_aadhaar_record", "add_m_driving_license_record"],
+            successUrl: "REPLACE_ME://.com/success", // optional redirect URL on success
+            failureUrl: "REPLACE_ME://.com/failure"
+        });
+    }
+}
